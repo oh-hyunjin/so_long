@@ -1,0 +1,14 @@
+{
+	"files.associations": {
+		"array": "c",
+		"string": "c",
+		"string_view": "c",
+		"vector": "c",
+		"so_long.h": "c",
+		"iterator": "c",
+		"time.h": "c",
+		"so_long_bonus.h": "c",
+		"get_next_line_bonus.h": "c",
+		"unistd.h": "c"
+	}
+}
