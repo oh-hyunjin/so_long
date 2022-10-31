@@ -6,7 +6,7 @@
 /*   By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 12:56:02 by hyoh              #+#    #+#             */
-/*   Updated: 2022/10/28 10:28:19 by hyoh             ###   ########.fr       */
+/*   Updated: 2022/10/31 10:36:32 by hyoh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	put_enemy(t_vars *vars)
 	}
 	vars->enemy.y = y;
 	vars->enemy.x = x;
-	vars->enemy.ptr = vars->enemy.right;
 }
 
 void	move_enemy(t_vars *vars, int curY, int curX)

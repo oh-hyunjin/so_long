@@ -6,11 +6,11 @@
 #    By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/29 08:33:42 by hyoh              #+#    #+#              #
-#    Updated: 2022/10/29 10:13:20 by hyoh             ###   ########.fr        #
+#    Updated: 2022/10/31 11:52:35 by hyoh             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME				=	libft.a
+NAME				=	lib_ft.a
 
 CC					=	CC
 CFLAG				=	-Wall -Wextra -Werror

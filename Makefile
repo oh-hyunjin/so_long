@@ -6,7 +6,7 @@
 #    By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/11 10:48:21 by hyoh              #+#    #+#              #
-#    Updated: 2022/10/29 12:06:40 by hyoh             ###   ########.fr        #
+#    Updated: 2022/10/31 11:49:52 by hyoh             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,7 +50,7 @@ all : $(NAME)
 $(NAME): $(OBJECT)
 	make -C $(LIB_DIR)
 	make -C $(MLX_DIR)
-	$(CC) $(OBJECT) -L $(LIB_DIR) -l ft -L $(MLX_DIR) $(MLX_FLAG) -o $(NAME)
+	$(CC) $(OBJECT) -L $(LIB_DIR) -l _ft -L $(MLX_DIR) $(MLX_FLAG) -o $(NAME)
 
 %.o : %.c
 	$(CC) $(CFLAG) -c $< -o $@
@@ -64,7 +64,7 @@ clean :
 	$(RM) $(OBJS) $(OBJS_BN)
 
 fclean : clean
-	make -C $(LIB_DIR) fclean
+	make fclean -C $(LIB_DIR)
 	$(RM) $(NAME)
 
 re : fclean all
