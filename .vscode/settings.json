@@ -10,6 +10,7 @@
 		"so_long_bonus.h": "c",
 		"get_next_line_bonus.h": "c",
 		"unistd.h": "c",
-		"get_next_line.h": "c"
+		"get_next_line.h": "c",
+		"__locale": "c"
 	}
 }

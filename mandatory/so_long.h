@@ -6,7 +6,7 @@
 /*   By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 08:02:46 by hyoh              #+#    #+#             */
-/*   Updated: 2022/10/29 12:01:35 by hyoh             ###   ########.fr       */
+/*   Updated: 2022/11/07 14:06:57 by hyoh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,14 @@
 # define PLAYER 'P'
 # define EMPTY '0'
 
-# define LOSE 0
 # define WIN 1
-# define ERROR_0 2
-# define ERROR_1 3
-# define ERROR_2 4
-# define ERROR_3 5
+# define LOSE 2
+# define ERROR_0 3
+# define ERROR_1 4
+# define ERROR_2 5
+# define ERROR_3 6
+# define ERROR_4 7
+# define MALLOC_FAIL 8
 
 typedef struct s_image
 {
@@ -67,23 +69,42 @@ typedef struct s_vars
 	t_image	exit;
 }	t_vars;
 
-int		get_num(t_vars *vars, char target);
-char	*remove_n(char *str);
-char	**make_into_2d(char *map_1D, t_vars *vars);
-char	*ft_itoa(int num);
-void	put_movement(int num);
-int		setting(char *filename, t_vars *vars);
-char	*read_map(char *filename, t_vars *vars);
-int		map_errorcheck(t_vars *vars);
-int		init_vars(char *map_1D, t_vars *vars);
-void	image_pointer(t_vars *vars);
+typedef struct s_bfs
+{
+	char	**visit;
+	int		dy[4];
+	int		dx[4];
+	int		exit_flag;
+	int		item_flag;
+}	t_bfs;
+
+// so_long.c
+void	ft_free(int height, char **arr);
+int		exit_game(t_vars *vars, int exit_case);
 int		ft_loop(t_vars *vars);
-int		print_map(t_vars *vars);
-int		exit_game(t_vars *vars, int message);
-int		main(int argc, char **argv);
-int		key_hook(int key, t_vars *vars);
-int		key_hook_input(int key, t_vars *vars, int cur_x, int cur_y);
-int		print_player(t_vars *vars);
+
+// setting.c
+int		map_errorcheck(t_vars *vars);
+void	image_pointer(t_vars *vars);
+int		init_vars(t_vars *vars);
+void	read_map(int fd, t_vars *vars);
+int		setting(char *filename, t_vars *vars);
+
+// valid_path.c
+void	bfs_recur(t_vars *vars, t_bfs *bfs, int cy, int cx);
+void	bfs_setting(t_vars *vars, t_bfs *bfs);
+int		bfs_check(t_vars *vars);
+
+// player.c
 int		is_valid_path(t_vars *vars, int next_y, int next_x);
+int		key_hook_input(int key, t_vars *vars, int cur_x, int cur_y);
+int		key_hook(int key, t_vars *vars);
+
+// utils.c
+char	*remove_n(char *str);
+int		item_exit_start_check(t_vars *vars);
+void	make_2d_array(int y, int x, char *map_1D, t_vars *vars); // 대문자가능??
+char	*ft_itoa(int num);
+void	put_movement(t_vars *vars, int num);
 
 #endif

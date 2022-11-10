@@ -6,7 +6,7 @@
 /*   By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 12:56:02 by hyoh              #+#    #+#             */
-/*   Updated: 2022/10/31 10:36:32 by hyoh             ###   ########.fr       */
+/*   Updated: 2022/11/10 13:09:10 by hyoh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,19 @@ void	put_enemy(t_vars *vars)
 {
 	int	y;
 	int	x;
+	int	flag;
 
 	y = -1;
-	x = -1;
+	flag = 0;
 	while (++y < vars->hei)
+	{
+		x = -1;
 		while (++x < vars->wid)
 			if (vars->map_2d[y][x] == '0')
-				break ;
-	if (y == vars->hei && x == vars->wid)
-		return ;
+				flag = 1;
+	}
+	if (flag == 0)
+		exit_game(vars, 0);
 	srand((unsigned int)time(NULL));
 	while (1)
 	{
@@ -60,17 +64,23 @@ void	put_enemy(t_vars *vars)
 void	move_enemy(t_vars *vars, int curY, int curX)
 {
 	int	dir;
+	int	i;
 
-	while (1)
+	i = 0;
+	while (i++ < 4)
 	{
 		dir = rand() % 4;
-		if (dir == 0 && vars->map_2d[curY - 1][curX] == '0')
+		if (dir == 0 && (vars->map_2d[curY - 1][curX] == '0' || \
+vars->map_2d[curY - 1][curX] == 'P'))
 			vars->enemy.y = curY - 1;
-		else if (dir == 1 && vars->map_2d[curY + 1][curX] == '0')
+		else if (dir == 1 && (vars->map_2d[curY + 1][curX] == '0' || \
+vars->map_2d[curY + 1][curX] == 'P'))
 			vars->enemy.y = curY + 1;
-		else if (dir == 2 && vars->map_2d[curY][curX - 1] == '0')
+		else if (dir == 2 && (vars->map_2d[curY][curX - 1] == '0' || \
+vars->map_2d[curY][curX - 1] == 'P'))
 			vars->enemy.x = curX - 1;
-		else if (dir == 3 && vars->map_2d[curY][curX + 1] == '0')
+		else if (dir == 3 && (vars->map_2d[curY][curX + 1] == '0' || \
+vars->map_2d[curY - 1][curX] == 'P'))
 			vars->enemy.x = curX + 1;
 		else
 			continue ;

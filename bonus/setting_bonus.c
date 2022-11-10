@@ -6,7 +6,7 @@
 /*   By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/05 10:17:50 by hyoh              #+#    #+#             */
-/*   Updated: 2022/10/29 10:48:38 by hyoh             ###   ########.fr       */
+/*   Updated: 2022/11/07 12:51:08 by hyoh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,15 @@ int	map_errorcheck(t_vars *vars)
 	x = -1;
 	while (++x < vars->wid)
 		if (vars->map_2d[0][x] != '1' || vars->map_2d[vars->hei - 1][x] != '1')
-			exit_game(vars, ERROR_2);
+			exit_game(vars, ERROR_3);
 	y = -1;
 	while (++y < vars->hei)
 		if (vars->map_2d[y][0] != '1' || vars->map_2d[y][vars->wid - 1] != '1')
-			exit_game(vars, ERROR_2);
-	if (!get_num(vars, 'E') || !get_num(vars, 'C') || get_num(vars, 'P') != 1)
-		exit_game(vars, ERROR_3);
+			exit_game(vars, ERROR_3);
+	if (item_exit_start_check(vars) == -1)
+		exit_game(vars, ERROR_1);
+	if (bfs_check(vars) == -1)
+		exit_game(vars, ERROR_4);
 	return (0);
 }
 
@@ -60,14 +62,12 @@ void	image_pointer(t_vars *vars)
 		"./xpm/anywhere_door.xpm", &vars->exit.wid, &vars->exit.hei);
 }
 
-int	init_vars(char *map_1d, t_vars *vars)
+int	init_vars(t_vars *vars)
 {
-	vars->map_2d = make_2d_array(map_1d, vars);
 	vars->mlx = mlx_init();
 	vars->win = mlx_new_window(vars->mlx, vars->wid * 64, \
 vars->hei * 64, "so_long");
 	vars->movement = 0;
-	vars->item_num = get_num(vars, ITEM);
 	vars->player.dir = 1;
 	vars->enemy.dir = 1;
 	image_pointer(vars);
@@ -75,16 +75,14 @@ vars->hei * 64, "so_long");
 	return (0);
 }
 
-char	*read_map(char *filename, t_vars *vars)
+void	read_map(int fd, t_vars *vars)
 {
-	int		fd;
 	char	*temp;
 	char	*map;
 
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-		exit_game(vars, ERROR_0);
 	map = remove_n(get_next_line(fd));
+	if (!map)
+		exit_game(vars, ERROR_2);
 	vars->wid = ft_strlen(map);
 	vars->hei = 1;
 	while (1)
@@ -93,22 +91,30 @@ char	*read_map(char *filename, t_vars *vars)
 		if (temp == NULL)
 			break ;
 		if (ft_strlen(temp) != vars->wid)
-			exit_game(vars, ERROR_1);
+		{
+			free(temp);
+			free(map);
+			exit_game(vars, ERROR_2);
+		}
 		map = ft_strjoin(map, temp);
 		free(temp);
 		vars->hei++;
 	}
-	return (map);
+	make_2d_array(-1, -1, map, vars);
+	free(map);
 }
 
 int	setting(char *filename, t_vars *vars)
 {
-	char	*map_1d;
+	int	fd;
 
-	map_1d = read_map(filename, vars);
-	init_vars(map_1d, vars);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
+		exit_game(vars, ERROR_0);
+	read_map(fd, vars);
+	close(fd);
 	map_errorcheck(vars);
-	free(map_1d);
+	init_vars(vars);
 	put_enemy(vars);
 	return (0);
 }

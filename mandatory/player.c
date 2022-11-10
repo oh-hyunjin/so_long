@@ -6,11 +6,20 @@
 /*   By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/25 12:55:26 by hyoh              #+#    #+#             */
-/*   Updated: 2022/10/28 09:35:43 by hyoh             ###   ########.fr       */
+/*   Updated: 2022/11/07 13:18:36 by hyoh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
+
+int	is_valid_path(t_vars *vars, int next_y, int next_x)
+{
+	if (vars->map_2d[next_y][next_x] == WALL)
+		return (0);
+	if (vars->item_num != 0 && vars->map_2d[next_y][next_x] == EXIT)
+		return (0);
+	return (1);
+}
 
 int	key_hook_input(int key, t_vars *vars, int cur_x, int cur_y)
 {
@@ -41,13 +50,8 @@ int	key_hook_input(int key, t_vars *vars, int cur_x, int cur_y)
 
 int	key_hook(int key, t_vars *vars)
 {
-	int	pre_y;
-	int	pre_x;
-
 	if (key == ESC)
-		exit_game(vars, -1);
-	pre_x = vars->player.x;
-	pre_y = vars->player.y;
+		exit_game(vars, 0);
 	if ((key_hook_input(key, vars, vars->player.x, vars->player.y)) == 0)
 		return (0);
 	if (vars->map_2d[vars->player.y][vars->player.x] == ITEM)
@@ -58,15 +62,6 @@ int	key_hook(int key, t_vars *vars)
 	else if (vars->map_2d[vars->player.y][vars->player.x] == EXIT && \
 vars->item_num == 0)
 		exit_game(vars, WIN);
-	put_movement(++(vars->movement));
+	put_movement(vars, ++(vars->movement));
 	return (0);
-}
-
-int	is_valid_path(t_vars *vars, int next_y, int next_x)
-{
-	if (vars->map_2d[next_y][next_x] == WALL)
-		return (0);
-	if (vars->item_num != 0 && vars->map_2d[next_y][next_x] == EXIT)
-		return (0);
-	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: hyoh <hyoh@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 08:14:13 by hyoh              #+#    #+#             */
-/*   Updated: 2022/10/31 11:07:35 by hyoh             ###   ########.fr       */
+/*   Updated: 2022/11/07 13:48:52 by hyoh             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,53 +22,59 @@ char	*remove_n(char *str)
 	return (str);
 }
 
-int	get_num(t_vars *vars, char target)
+int	item_exit_start_check(t_vars *vars)
 {
-	int	n;
+	int	exit_num;
+	int	start_num;
 	int	y;
 	int	x;
 
-	n = 0;
+	vars->item_num = 0;
+	exit_num = 0;
+	start_num = 0;
 	y = -1;
 	while (++y < vars->hei)
 	{
 		x = -1;
 		while (++x < vars->wid)
 		{
-			if (vars->map_2d[y][x] == target)
-				n++;
+			if (vars->map_2d[y][x] == ITEM)
+				vars->item_num++;
+			if (vars->map_2d[y][x] == EXIT)
+				exit_num++;
+			if (vars->map_2d[y][x] == PLAYER)
+				start_num++;
 		}
 	}
-	return (n);
+	if (vars->item_num == 0 || exit_num != 1 || start_num != 1)
+		return (-1);
+	return (1);
 }
 
-char	**make_2d_array(char *map_1d, t_vars *vars)
+void	make_2d_array(int y, int x, char *map_1d, t_vars *vars)
 {
-	char	**result;
-	int		y;
-	int		x;
-
-	result = (char **)malloc(sizeof(char *) * vars->hei);
-	if (result == NULL)
-		return (NULL);
-	y = -1;
+	vars->map_2d = (char **)malloc(sizeof(char *) * vars->hei);
+	if (!vars->map_2d)
+		exit_game(vars, MALLOC_FAIL);
 	while (++y < vars->hei)
 	{
-		result[y] = (char *)malloc(sizeof(char) * vars->wid);
-		if (result[y] == NULL)
-			return (NULL);
+		vars->map_2d[y] = (char *)malloc(sizeof(char) * vars->wid);
+		if (!vars->map_2d[y])
+		{
+			ft_free(y, vars->map_2d);
+			exit_game(vars, MALLOC_FAIL);
+		}
 		x = -1;
 		while (++x < vars->wid)
 		{
-			result[y][x] = *map_1d++;
-			if (result[y][x] == PLAYER)
+			vars->map_2d[y][x] = *map_1d++;
+			if (vars->map_2d[y][x] == PLAYER)
 			{
 				vars->player.y = y;
 				vars->player.x = x;
 			}
 		}
 	}
-	return (result);
 }
 
 char	*ft_itoa(int num)
@@ -86,7 +92,7 @@ char	*ft_itoa(int num)
 	}
 	str = (char *)malloc(sizeof(char) * (len + 1));
 	if (!str)
-		return (0);
+		return (NULL);
 	str[len] = '\0';
 	while (--len != -1)
 	{
@@ -96,11 +102,13 @@ char	*ft_itoa(int num)
 	return (str);
 }
 
-void	put_movement(int num)
+void	put_movement(t_vars *vars, int num)
 {
 	char	*str;
 
 	str = ft_itoa(num);
+	if (!str)
+		exit_game(vars, MALLOC_FAIL);
 	write(1, str, ft_strlen(str));
 	write(1, "\n", 1);
 	free(str);
